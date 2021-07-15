@@ -6,6 +6,7 @@ export default makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    textDecoration: 'none',
   },
   signup: {
     marginRight: '20px',

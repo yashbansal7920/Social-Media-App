@@ -18,7 +18,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (history.action === 'POP') return;
+    if (history.action === 'POP' && !localStorage.getItem('token')) return;
 
     const fetchUser = async () => {
       const { data } = await axios.get(
@@ -30,7 +30,6 @@ const Navbar = () => {
           },
         }
       );
-      console.log(data);
       setProfilePhoto(data.profilePhoto);
     };
     fetchUser();
@@ -39,7 +38,13 @@ const Navbar = () => {
   return (
     <AppBar className={classes.root} color="inherit" position="sticky">
       <Toolbar>
-        <Typography className={classes.title} variant="h3" color="primary">
+        <Typography
+          component={Link}
+          to="/"
+          className={classes.title}
+          variant="h3"
+          color="primary"
+        >
           Socios
         </Typography>
         {localStorage.getItem('token') ? (

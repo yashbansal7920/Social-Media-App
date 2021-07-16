@@ -1,35 +1,32 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, Container, Avatar, Typography } from '@material-ui/core';
+import { Grid, Container, Avatar, Typography, Button } from '@material-ui/core';
 import useStyles from './styles';
-import { useParams } from 'react-router';
-import avatar from '../../assets/avatar.png';
+import avatar from '../../../assets/avatar.png';
 
-const User = () => {
+const UserProfile = () => {
   const classes = useStyles();
   const [userData, setUserData] = useState({});
-
-  const { userId } = useParams();
 
   useEffect(() => {
     const fetchMe = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/user/${userId}`,
+          `${process.env.REACT_APP_API_URL}/user/me`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           }
         );
-        console.log(data);
         setUserData(data);
       } catch (error) {
-        console.log(error.response.message);
+        console.log(error);
       }
     };
     fetchMe();
-  }, [userId]);
+  }, []);
 
   return (
     <Container maxWidth="sm">
@@ -58,10 +55,22 @@ const User = () => {
             <Typography variant="h6">{userData.name}</Typography>
             <Typography variant="subtitle1">{userData.bio}</Typography>
           </Grid>
+          <Grid></Grid>
+          <Grid item xs={12}>
+            <Button
+              component={Link}
+              to="/updateMe"
+              color="primary"
+              variant="outlined"
+              fullWidth
+            >
+              Edit Profile
+            </Button>
+          </Grid>
         </Grid>
       )}
     </Container>
   );
 };
 
-export default User;
+export default UserProfile;

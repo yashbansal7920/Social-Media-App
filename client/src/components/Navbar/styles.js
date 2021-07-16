@@ -19,4 +19,7 @@ export default makeStyles((theme) => ({
     width: '62px',
     marginRight: '20px',
   },
+  icon: {
+    marginRight: '15px',
+  },
 }));

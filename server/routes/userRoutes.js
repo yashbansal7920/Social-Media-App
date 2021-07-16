@@ -4,14 +4,19 @@ const {
   getAllUsers,
   getMe,
   updateMe,
+  getUser,
 } = require('../controllers/userController');
 const { isAuthorized } = require('../middlewares/private');
 const upload = require('../middlewares/uploadPhoto');
 
 const router = express.Router();
 
-router.route('/').get(isAuthorized, getAllUsers);
-router.route('/me').get(isAuthorized, getMe);
-router.route('/updateMe').patch(isAuthorized, upload.single('photo'), updateMe);
+// This middleware is used for user is authorized or not
+router.use(isAuthorized);
+
+router.route('/me').get(getMe);
+router.route('/').get(getAllUsers);
+router.route('/:id').get(getUser);
+router.route('/updateMe').patch(upload.single('photo'), updateMe);
 
 module.exports = router;

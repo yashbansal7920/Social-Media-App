@@ -26,10 +26,10 @@ const Login = () => {
         formData
       );
 
+      setFormData(initialState);
       localStorage.setItem('token', data.token);
 
       history.push('/');
-      setFormData(initialState);
     } catch (error) {
       if (error.response) {
         setTimeout(() => {

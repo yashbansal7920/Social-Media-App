@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
+const slugify = require('slugify');
+// const crypto = require('crypto');
 
 const userSchema = mongoose.Schema({
   name: {
@@ -31,6 +32,7 @@ const userSchema = mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordTokenExpire: Date,
+  slug: String,
 
   following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   followers: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
@@ -46,22 +48,27 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true, replacement: ' ' });
+  next();
+});
+
 userSchema.methods.comparePasswords = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.getResetPasswordToken = function () {
-  const resetToken = crypto.randomBytes(20).toString('hex');
+// userSchema.methods.getResetPasswordToken = function () {
+//   const resetToken = crypto.randomBytes(20).toString('hex');
 
-  this.resetPasswordToken = crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex');
+//   this.resetPasswordToken = crypto
+//     .createHash('sha256')
+//     .update(resetToken)
+//     .digest('hex');
 
-  this.resetPasswordTokenExpire = Date.now() + 10 * 60 * 1000;
+//   this.resetPasswordTokenExpire = Date.now() + 10 * 60 * 1000;
 
-  return resetToken;
-};
+//   return resetToken;
+// };
 
 const User = mongoose.model('User', userSchema);
 

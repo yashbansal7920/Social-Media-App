@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { AppBar, Toolbar, Typography, Button, Avatar } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Avatar,
+  IconButton,
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
 import useStyles from './styles';
 import avatar from '../../assets/avatar.png';
-import { useHistory } from 'react-router';
+import SearchModal from '../SearchModal/SearchModal';
 
 const Navbar = () => {
   const classes = useStyles();
   const [isLogout, setIsLogout] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const history = useHistory();
+  const [currentUser, setCurrentUser] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -18,7 +25,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (history.action === 'POP' && !localStorage.getItem('token')) return;
+    if (!localStorage.getItem('token')) return;
 
     const fetchUser = async () => {
       const { data } = await axios.get(
@@ -30,10 +37,10 @@ const Navbar = () => {
           },
         }
       );
-      setProfilePhoto(data.profilePhoto);
+      setCurrentUser(data);
     };
     fetchUser();
-  }, [history]);
+  }, []);
 
   return (
     <AppBar className={classes.root} color="inherit" position="sticky">
@@ -50,8 +57,13 @@ const Navbar = () => {
         {localStorage.getItem('token') ? (
           <>
             {' '}
+            <SearchModal userId={currentUser?._id}>
+              <IconButton className={classes.icon} size="medium">
+                <SearchIcon fontSize="large" />
+              </IconButton>
+            </SearchModal>
             <Avatar
-              src={profilePhoto || avatar}
+              src={currentUser?.profilePhoto || avatar}
               component={Link}
               to="/me"
               className={classes.avatar}

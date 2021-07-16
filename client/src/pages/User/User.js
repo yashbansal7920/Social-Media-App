@@ -22,7 +22,7 @@ const User = () => {
             },
           }
         );
-        console.log(data);
+        data.profilePhoto = data.profilePhoto.replace('/user', '');
         setUserData(data);
       } catch (error) {
         console.log(error.response.message);
@@ -39,7 +39,7 @@ const User = () => {
           <Grid item xs={12} sm={4}>
             <Avatar
               className={classes.avatar}
-              src={userData.profilePhoto || avatar}
+              src={`/${userData.profilePhoto}` || avatar}
             />
           </Grid>
           <Grid item xs={12} sm={8}>

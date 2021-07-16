@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { Avatar, Typography, Card, CardContent } from '@material-ui/core';
 import useStyles from './styles';
 
-const UserList = ({ user }) => {
+const UserList = ({ user, setIsCliked }) => {
   const classes = useStyles();
 
   return (
-    <Link to={`/${user._id}`}>
-      <Card className={classes.card}>
+    <Link to={`/user/${user._id}`}>
+      <Card onClick={(e) => setIsCliked(true)} className={classes.card}>
         <CardContent className={classes.cardContent}>
-          <Avatar className={classes.avatar} src={user.profilePhoto} />
+          <Avatar className={classes.avatar} src={`/${user.profilePhoto}`} />
           <div>
             <Typography style={{ borderBottom: 'none' }} variant="h6">
               {user.username}

@@ -29,6 +29,7 @@ exports.getMe = async (req, res) => {
 
 exports.updateMe = async (req, res) => {
   try {
+    console.log(req.file);
     if (req.file) req.body.profilePhoto = req.file.filename;
 
     const user = await User.findByIdAndUpdate(req.user.id, req.body, {

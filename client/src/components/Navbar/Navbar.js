@@ -63,7 +63,7 @@ const Navbar = () => {
               </IconButton>
             </SearchModal>
             <Avatar
-              src={currentUser?.profilePhoto || avatar}
+              src={`/${currentUser?.profilePhoto}` || avatar}
               component={Link}
               to="/me"
               className={classes.avatar}

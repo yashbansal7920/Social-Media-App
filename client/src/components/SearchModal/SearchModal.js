@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Modal, Backdrop, Fade, Grid } from '@material-ui/core';
+import { Modal, Backdrop, Fade } from '@material-ui/core';
 import SearchBar from 'material-ui-search-bar';
 import useStyles from './styles';
 import UserList from '../userList/UserList';
@@ -9,6 +9,7 @@ const SearchModal = ({ children, userId }) => {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isClicked, setIsCliked] = useState(false);
   const [query, setQuery] = useState('');
 
   const handleOpen = () => {
@@ -17,8 +18,13 @@ const SearchModal = ({ children, userId }) => {
 
   const handleClose = () => {
     setOpen(false);
+    setIsCliked(false);
     // setUsers([]);
   };
+
+  useEffect(() => {
+    if (isClicked) setOpen(false);
+  }, [isClicked]);
 
   const fetchUsers = async () => {
     const { data } = await axios.get(
@@ -59,7 +65,13 @@ const SearchModal = ({ children, userId }) => {
               style={{ marginBottom: '20px' }}
             />
             {users.map((user) => {
-              return <UserList key={user._id} user={user} />;
+              return (
+                <UserList
+                  setIsCliked={setIsCliked}
+                  key={user._id}
+                  user={user}
+                />
+              );
             })}
           </div>
         </Fade>

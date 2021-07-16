@@ -25,9 +25,9 @@ const App = () => {
           <>
             <Navbar />
             <Route component={Home} exact path="/" />
-            <Route exact component={UserProfile} path="/me" />
+            <Route exact path="/me" component={UserProfile} />
             <Route exact component={UpdateUser} path="/updateMe" />
-            <Route component={User} exact path="/:userId" />
+            <Route component={User} path="/user/:userId" />
           </>
         </Switch>
       </ThemeProvider>

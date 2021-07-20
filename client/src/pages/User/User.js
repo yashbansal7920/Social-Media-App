@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, Container, Avatar, Typography } from '@material-ui/core';
+import { Grid, Container, Avatar, Typography, Button } from '@material-ui/core';
 import useStyles from './styles';
 import { useParams } from 'react-router';
 import avatar from '../../assets/avatar.png';
@@ -8,11 +8,32 @@ import avatar from '../../assets/avatar.png';
 const User = () => {
   const classes = useStyles();
   const [userData, setUserData] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
+  const [isFollow, setIsFollow] = useState(false);
 
   const { userId } = useParams();
 
   useEffect(() => {
     const fetchMe = async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+        setCurrentUser(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchMe();
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
       try {
         const { data } = await axios.get(
           `${process.env.REACT_APP_API_URL}/user/${userId}`,
@@ -22,14 +43,48 @@ const User = () => {
             },
           }
         );
-        data.profilePhoto = data.profilePhoto.replace('/user', '');
         setUserData(data);
+        setIsFollow(data?.followers?.includes(currentUser._id));
       } catch (error) {
-        console.log(error.response.message);
+        console.log(error.response);
       }
     };
-    fetchMe();
-  }, [userId]);
+    fetchUser();
+  }, [userId, currentUser]);
+
+  const handleFollow = async () => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_URL}/user/follow`,
+        { userId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      setCurrentUser(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleUnFollow = async () => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_URL}/user/unfollow`,
+        { userId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      setCurrentUser(data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   return (
     <Container maxWidth="sm">
@@ -45,18 +100,38 @@ const User = () => {
           <Grid item xs={12} sm={8}>
             <Typography variant="h5">{userData.username}</Typography>
             <Typography variant="body1" display="inline">
-              Posts 0
-            </Typography>{' '}
+              Posts 0 &nbsp;
+            </Typography>
             <Typography variant="body1" display="inline">
-              Followers 0
-            </Typography>{' '}
+              &nbsp; Followers {userData.followers?.length} &nbsp;
+            </Typography>
             <Typography variant="body1" display="inline">
-              Following 0
+              &nbsp; Following {userData.following?.length}
             </Typography>
             <br />
             <br />
             <Typography variant="h6">{userData.name}</Typography>
             <Typography variant="subtitle1">{userData.bio}</Typography>
+          </Grid>
+          <Grid item xs={6}></Grid>
+          <Grid item xs={6}>
+            {isFollow ? (
+              <Button
+                onClick={handleUnFollow}
+                variant="contained"
+                color="primary"
+              >
+                UnFollow
+              </Button>
+            ) : (
+              <Button
+                onClick={handleFollow}
+                variant="contained"
+                color="primary"
+              >
+                Follow
+              </Button>
+            )}
           </Grid>
         </Grid>
       )}

@@ -42,13 +42,13 @@ const UserProfile = () => {
           <Grid item xs={12} sm={8}>
             <Typography variant="h5">{userData.username}</Typography>
             <Typography variant="body1" display="inline">
-              Posts 0
+              Posts 0 &nbsp;
             </Typography>{' '}
             <Typography variant="body1" display="inline">
-              Followers 0
+              &nbsp; Followers {userData.followers?.length} &nbsp;
             </Typography>{' '}
             <Typography variant="body1" display="inline">
-              Following 0
+              &nbsp; Following {userData.following?.length}
             </Typography>
             <br />
             <br />

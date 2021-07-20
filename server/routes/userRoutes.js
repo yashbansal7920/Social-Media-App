@@ -5,6 +5,8 @@ const {
   getMe,
   updateMe,
   getUser,
+  follow,
+  unFollow,
 } = require('../controllers/userController');
 const { isAuthorized } = require('../middlewares/private');
 const upload = require('../middlewares/uploadPhoto');
@@ -15,8 +17,12 @@ const router = express.Router();
 router.use(isAuthorized);
 
 router.route('/me').get(getMe);
+router.route('/updateMe').patch(upload.single('photo'), updateMe);
+
 router.route('/').get(getAllUsers);
 router.route('/:id').get(getUser);
-router.route('/updateMe').patch(upload.single('photo'), updateMe);
+
+router.route('/follow').post(follow);
+router.route('/unfollow').post(unFollow);
 
 module.exports = router;

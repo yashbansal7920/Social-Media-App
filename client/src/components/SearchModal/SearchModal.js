@@ -14,17 +14,21 @@ const SearchModal = ({ children, userId }) => {
 
   const handleOpen = () => {
     setOpen(true);
+    setIsCliked(false);
   };
 
   const handleClose = () => {
     setOpen(false);
     setIsCliked(false);
-    // setUsers([]);
   };
 
   useEffect(() => {
     if (isClicked) setOpen(false);
   }, [isClicked]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const fetchUsers = async () => {
     const { data } = await axios.get(

@@ -35,13 +35,14 @@ const UpdateUser = () => {
       <div style={{ marginTop: '32px' }} />
       <Paper style={{ padding: '20px' }}>
         <form encType="multipart/form-data" onSubmit={handleUpdate}>
-          <TextField
+          <input
             onChange={(e) =>
               setFormdata((prev) => ({ ...prev, photo: e.target.files[0] }))
             }
+            accept="image/*"
             type="file"
-            label="Profile photo"
             name="photo"
+            style={{ marginBottom: '20px' }}
           />
           <TextField
             label="Name"
@@ -51,6 +52,7 @@ const UpdateUser = () => {
             }
             required
             fullWidth
+            style={{ marginBottom: '20px' }}
           />
           <TextField
             style={{ marginBottom: '20px' }}

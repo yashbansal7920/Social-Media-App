@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
+const postRouter = require('./routes/postRoutes');
 
 connectDB();
 const app = express();
@@ -18,6 +19,7 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 // Routes
 app.use('/api', authRouter);
 app.use('/api/user', userRouter);
+app.use('/api/post', postRouter);
 
 // Listen
 const PORT = process.env.PORT || 8000;

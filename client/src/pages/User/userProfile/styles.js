@@ -8,4 +8,12 @@ export default makeStyles((theme) => ({
   toolbar: {
     marginTop: theme.spacing(4),
   },
+  container: {
+    marginRight: '120px',
+    marginLeft: '120px',
+    [theme.breakpoints.down(747)]: {
+      marginRight: '10px',
+      marginLeft: '10px',
+    },
+  },
 }));

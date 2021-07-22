@@ -14,7 +14,7 @@ const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new Error("I don't have a clue!"), false);
+    cb(new Error('Please provide image only'), false);
   }
 };
 

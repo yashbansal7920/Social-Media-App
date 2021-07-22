@@ -12,11 +12,9 @@ export default makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
     width: '80%',
     height: '80%',
-    overflowY: 'scroll',
-    scrollbarWidth: 'none',
-
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
+  },
+  img: {
+    width: '200px',
+    display: 'block',
   },
 }));

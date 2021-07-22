@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, Container, Avatar, Typography, Button } from '@material-ui/core';
+import {
+  Grid,
+  Container,
+  Avatar,
+  Typography,
+  Button,
+  Divider,
+} from '@material-ui/core';
 import useStyles from './styles';
 import { useParams } from 'react-router';
 import avatar from '../../assets/avatar.png';
+import UserPosts from '../posts/UserPosts';
 
 const User = () => {
   const classes = useStyles();
@@ -132,6 +140,10 @@ const User = () => {
                 Follow
               </Button>
             )}
+          </Grid>
+          <Divider />
+          <Grid item container xs={12}>
+            <UserPosts userId={userId} />
           </Grid>
         </Grid>
       )}

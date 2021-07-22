@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, Container, Avatar, Typography, Button } from '@material-ui/core';
+import { Grid, Avatar, Typography, Button } from '@material-ui/core';
 import useStyles from './styles';
 import avatar from '../../../assets/avatar.png';
+import ProfilePosts from '../../posts/ProfilePosts';
 
 const UserProfile = () => {
   const classes = useStyles();
@@ -29,7 +30,7 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <Container maxWidth="sm">
+    <div className={classes.container}>
       <div className={classes.toolbar} />
       {userData && (
         <Grid container justifyContent="center" alignItems="center" spacing={2}>
@@ -67,9 +68,12 @@ const UserProfile = () => {
               Edit Profile
             </Button>
           </Grid>
+          <Grid container justifyContent="center" item xs={12}>
+            <ProfilePosts />
+          </Grid>
         </Grid>
       )}
-    </Container>
+    </div>
   );
 };
 

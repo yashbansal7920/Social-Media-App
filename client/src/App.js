@@ -11,6 +11,7 @@ import Navbar from './components/Navbar/Navbar';
 import UserProfile from './pages/User/userProfile/UserProfile';
 import UpdateUser from './pages/User/update/UpdateUser';
 import User from './pages/User/User';
+import Post from './pages/posts/Post';
 
 let theme = createTheme();
 theme = responsiveFontSizes(theme);
@@ -27,7 +28,8 @@ const App = () => {
             <Route component={Home} exact path="/" />
             <Route exact path="/me" component={UserProfile} />
             <Route exact component={UpdateUser} path="/updateMe" />
-            <Route component={User} path="/user/:userId" />
+            <Route component={User} exact path="/user/:userId" />
+            <Route component={Post} exact path="/post/:postId" />
           </>
         </Switch>
       </ThemeProvider>

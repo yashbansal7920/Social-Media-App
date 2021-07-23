@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Post = require('../models/Posts');
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -20,7 +21,14 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-__v');
+    const posts = await Post.find({ postedBy: req.user._id });
+    const user = await User.findById(req.user._id)
+      .select('-__v')
+      .populate('following followers', 'name profilePhoto username');
+
+    user.posts = posts.length;
+    user.save();
+
     res.status(200).json(user);
   } catch (error) {
     res.status(401).json(error);
@@ -42,9 +50,16 @@ exports.updateMe = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-__v -slug');
+    const user = await User.findById(req.params.id)
+      .select('-__v -slug')
+      .populate('following followers', 'name profilePhoto username');
 
     if (!user) return res.status(404).json('No user Found');
+
+    const posts = await Post.find({ postedBy: req.params.id });
+
+    user.posts = posts.length;
+    user.save();
 
     res.status(200).json(user);
   } catch (error) {

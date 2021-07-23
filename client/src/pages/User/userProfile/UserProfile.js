@@ -5,6 +5,7 @@ import { Grid, Avatar, Typography, Button } from '@material-ui/core';
 import useStyles from './styles';
 import avatar from '../../../assets/avatar.png';
 import ProfilePosts from '../../posts/ProfilePosts';
+import PostModal from '../../../components/PostModal/PostModal';
 
 const UserProfile = () => {
   const classes = useStyles();
@@ -21,6 +22,7 @@ const UserProfile = () => {
             },
           }
         );
+        console.log(data);
         setUserData(data);
       } catch (error) {
         console.log(error);
@@ -43,14 +45,18 @@ const UserProfile = () => {
           <Grid item xs={12} sm={8}>
             <Typography variant="h5">{userData.username}</Typography>
             <Typography variant="body1" display="inline">
-              Posts 0 &nbsp;
+              Posts {userData.posts} &nbsp;
             </Typography>{' '}
-            <Typography variant="body1" display="inline">
-              &nbsp; Followers {userData.followers?.length} &nbsp;
-            </Typography>{' '}
-            <Typography variant="body1" display="inline">
-              &nbsp; Following {userData.following?.length}
-            </Typography>
+            <PostModal users={userData?.followers}>
+              <Typography variant="body1" display="inline">
+                &nbsp; Followers {userData.followers?.length} &nbsp;
+              </Typography>
+            </PostModal>{' '}
+            <PostModal users={userData?.following}>
+              <Typography variant="body1" display="inline">
+                &nbsp; Following {userData.following?.length}
+              </Typography>
+            </PostModal>
             <br />
             <br />
             <Typography variant="h6">{userData.name}</Typography>

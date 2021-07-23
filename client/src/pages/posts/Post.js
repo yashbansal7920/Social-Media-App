@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 // import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Moment from 'react-moment';
 import avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';

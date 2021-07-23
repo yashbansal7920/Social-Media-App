@@ -8,7 +8,10 @@ const UserList = ({ user, setIsCliked }) => {
 
   return (
     <Link to={`/user/${user._id}`}>
-      <Card onClick={(e) => setIsCliked(true)} className={classes.card}>
+      <Card
+        onClick={(e) => setIsCliked && setIsCliked(true)}
+        className={classes.card}
+      >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar} src={`/${user.profilePhoto}`} />
           <div>

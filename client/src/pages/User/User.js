@@ -12,6 +12,7 @@ import useStyles from './styles';
 import { useParams } from 'react-router';
 import avatar from '../../assets/avatar.png';
 import UserPosts from '../posts/UserPosts';
+import PostModal from '../../components/PostModal/PostModal';
 
 const User = () => {
   const classes = useStyles();
@@ -51,8 +52,13 @@ const User = () => {
             },
           }
         );
+        console.log(data);
         setUserData(data);
-        setIsFollow(data?.followers?.includes(currentUser._id));
+
+        setIsFollow(
+          data?.followers?.filter((f) => f._id !== currentUser._id).length !==
+            data?.followers.length
+        );
       } catch (error) {
         console.log(error.response);
       }
@@ -108,14 +114,18 @@ const User = () => {
           <Grid item xs={12} sm={8}>
             <Typography variant="h5">{userData.username}</Typography>
             <Typography variant="body1" display="inline">
-              Posts 0 &nbsp;
+              Posts {userData.posts} &nbsp;
             </Typography>
-            <Typography variant="body1" display="inline">
-              &nbsp; Followers {userData.followers?.length} &nbsp;
-            </Typography>
-            <Typography variant="body1" display="inline">
-              &nbsp; Following {userData.following?.length}
-            </Typography>
+            <PostModal users={userData?.followers}>
+              <Typography variant="body1" display="inline">
+                &nbsp; Followers {userData.followers?.length} &nbsp;
+              </Typography>
+            </PostModal>
+            <PostModal users={userData?.following}>
+              <Typography variant="body1" display="inline">
+                &nbsp; Following {userData.following?.length}
+              </Typography>
+            </PostModal>
             <br />
             <br />
             <Typography variant="h6">{userData.name}</Typography>

@@ -26,10 +26,6 @@ const SearchModal = ({ children, userId }) => {
     if (isClicked) setOpen(false);
   }, [isClicked]);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   const fetchUsers = async () => {
     const { data } = await axios.get(
       `${process.env.REACT_APP_API_URL}/user?name=${query}`,
@@ -66,6 +62,7 @@ const SearchModal = ({ children, userId }) => {
               placeholder="Search User"
               autoFocus
               onRequestSearch={fetchUsers}
+              // onCancelSearch={setUsers([])}
               style={{ marginBottom: '20px' }}
             />
             {users.map((user) => {

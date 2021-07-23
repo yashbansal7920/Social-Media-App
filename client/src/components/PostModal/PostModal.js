@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, Backdrop, Fade } from '@material-ui/core';
 import useStyles from './styles';
 import UserList from '../userList/UserList';
@@ -6,7 +6,6 @@ import UserList from '../userList/UserList';
 const PostModal = ({ children, users }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  // const [isClicked, setIsCliked] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -40,13 +39,7 @@ const PostModal = ({ children, users }) => {
           <div className={classes.paper}>
             {users &&
               users.map((user) => {
-                return (
-                  <UserList
-                    // setIsCliked={setIsCliked}
-                    key={user._id}
-                    user={user}
-                  />
-                );
+                return <UserList key={user._id} user={user} />;
               })}
           </div>
         </Fade>

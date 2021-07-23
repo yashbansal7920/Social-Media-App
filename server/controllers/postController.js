@@ -62,3 +62,41 @@ exports.deletePost = async (req, res) => {
     res.status(404).json(error);
   }
 };
+
+exports.likePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.body.postId,
+      {
+        $push: { likes: req.user._id },
+      },
+      { new: true }
+    ).populate({
+      path: 'postedBy',
+      select: '_id name username profilePhoto',
+    });
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+exports.unlikePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.body.postId,
+      {
+        $pull: { likes: req.user._id },
+      },
+      { new: true }
+    ).populate({
+      path: 'postedBy',
+      select: '_id name username profilePhoto',
+    });
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};

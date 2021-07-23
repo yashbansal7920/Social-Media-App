@@ -15,7 +15,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-// import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import Moment from 'react-moment';
 import avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';
@@ -25,6 +25,7 @@ const Post = () => {
   const history = useHistory();
   const [postData, setPostData] = useState({});
   const [userData, setUserData] = useState({});
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -38,13 +39,13 @@ const Post = () => {
           }
         );
         setPostData(data);
-        console.log(data);
+        setIsLiked(data.likes.includes(userData._id));
       } catch (error) {
         console.log(error.response);
       }
     };
     fetchPost();
-  }, [postId]);
+  }, [postId, userData]);
 
   useEffect(() => {
     const fetchMe = async () => {
@@ -73,6 +74,44 @@ const Post = () => {
         },
       });
       history.goBack();
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleLikePost = async () => {
+    try {
+      const { data } = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/post/like`,
+        { postId: postData._id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      // console.log(data);
+      setPostData(data);
+      setIsLiked(true);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleUnlikePost = async () => {
+    try {
+      const { data } = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/post/unlike`,
+        { postId: postData._id },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      // console.log(data);
+      setPostData(data);
+      setIsLiked(false);
     } catch (error) {
       console.log(error.response);
     }
@@ -107,21 +146,44 @@ const Post = () => {
           />
 
           <CardMedia component="img" image={`/${postData.image}`} />
+
           <CardContent>
             <Typography display="inline" variant="body2" component="p">
               {postData.body}
             </Typography>
           </CardContent>
+
           <CardActions disableSpacing>
-            <IconButton size="medium" color="secondary">
-              <FavoriteIcon />
-            </IconButton>
+            {isLiked ? (
+              <IconButton
+                onClick={handleUnlikePost}
+                size="medium"
+                color="secondary"
+              >
+                <FavoriteIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={handleLikePost}
+                size="medium"
+                color="secondary"
+              >
+                <FavoriteBorderIcon />
+              </IconButton>
+            )}
+
             <Typography style={{ flexGrow: 1 }} variant="subtitle2">
-              Likes 0
+              Likes {postData.likes?.length}
             </Typography>
             <Button>View Comments</Button>
           </CardActions>
-          <TextField fullWidth label="Write Comment" />
+
+          <TextField
+            style={{ marginLeft: '10px' }}
+            fullWidth
+            label="Write Comment"
+          />
+
           <CardActions>
             {userData._id === postData.postedBy?._id && (
               <Button

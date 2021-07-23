@@ -52,7 +52,6 @@ const User = () => {
             },
           }
         );
-        console.log(data);
         setUserData(data);
 
         setIsFollow(

@@ -22,7 +22,6 @@ const UserProfile = () => {
             },
           }
         );
-        console.log(data);
         setUserData(data);
       } catch (error) {
         console.log(error);

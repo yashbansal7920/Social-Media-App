@@ -63,6 +63,10 @@ const User = () => {
       }
     };
     fetchUser();
+
+    return () => {
+      setUserData({});
+    };
   }, [userId, currentUser]);
 
   const handleFollow = async () => {

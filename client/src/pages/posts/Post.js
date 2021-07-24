@@ -13,12 +13,16 @@ import {
   Button,
   Avatar,
   TextField,
+  Collapse,
+  InputAdornment,
 } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import SendIcon from '@material-ui/icons/Send';
 import Moment from 'react-moment';
 import avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';
+import Comments from './Comments';
 
 const Post = () => {
   const { postId } = useParams();
@@ -26,6 +30,12 @@ const Post = () => {
   const [postData, setPostData] = useState({});
   const [userData, setUserData] = useState({});
   const [isLiked, setIsLiked] = useState(false);
+  const [expand, setExpand] = useState(false);
+  const [comment, setComment] = useState('');
+
+  const handleExpandClick = () => {
+    setExpand((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -117,6 +127,26 @@ const Post = () => {
     }
   };
 
+  const handleComment = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/post/comment`,
+        { postId: postData._id, comment: { text: comment } },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      setPostData(data);
+      setComment('');
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   return (
     postData && (
       <Container maxWidth="sm">
@@ -175,14 +205,37 @@ const Post = () => {
             <Typography style={{ flexGrow: 1 }} variant="subtitle2">
               Likes {postData.likes?.length}
             </Typography>
-            <Button>View Comments</Button>
+            <Button onClick={handleExpandClick}>View Comments</Button>
           </CardActions>
 
-          <TextField
-            style={{ marginLeft: '10px' }}
-            fullWidth
-            label="Write Comment"
-          />
+          <Collapse in={expand} timeout="auto" unmountOnExit>
+            <Comments
+              comments={postData.comments}
+              currentUserId={userData._id}
+              setPostData={setPostData}
+              postData={postData}
+            />
+          </Collapse>
+
+          <form onSubmit={handleComment}>
+            <TextField
+              style={{ marginLeft: '10px', marginBottom: '10px' }}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton type="submit" color="primary">
+                      <SendIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              label="Write Comment"
+              value={comment}
+              required
+              onChange={(e) => setComment(e.target.value)}
+            />
+          </form>
 
           <CardActions>
             {userData._id === postData.postedBy?._id && (

@@ -39,7 +39,7 @@ exports.createPost = async (req, res) => {
 exports.getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id).populate({
-      path: 'postedBy',
+      path: 'postedBy comments.postedBy',
       select: '_id name username profilePhoto',
     });
 
@@ -72,7 +72,7 @@ exports.likePost = async (req, res) => {
       },
       { new: true }
     ).populate({
-      path: 'postedBy',
+      path: 'postedBy comments.postedBy',
       select: '_id name username profilePhoto',
     });
 
@@ -91,7 +91,47 @@ exports.unlikePost = async (req, res) => {
       },
       { new: true }
     ).populate({
-      path: 'postedBy',
+      path: 'postedBy comments.postedBy',
+      select: '_id name username profilePhoto',
+    });
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+exports.commentOnPost = async (req, res) => {
+  try {
+    req.body.comment.postedBy = req.user._id;
+
+    const post = await Post.findByIdAndUpdate(
+      req.body.postId,
+      {
+        $push: { comments: req.body.comment },
+      },
+      { new: true }
+    ).populate({
+      path: 'postedBy comments.postedBy',
+      select: '_id name username profilePhoto',
+    });
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+exports.deleteComment = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.body.postId,
+      {
+        $pull: { comments: { _id: req.body.commentId } },
+      },
+      { new: true }
+    ).populate({
+      path: 'postedBy comments.postedBy',
       select: '_id name username profilePhoto',
     });
 

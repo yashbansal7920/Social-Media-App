@@ -41,7 +41,7 @@ const ProfilePosts = () => {
           </Button>
         </CreatePost>
       </Grid>
-      {posts ? (
+      {posts.length ? (
         posts.map((post) => (
           <Grid
             component={Link}

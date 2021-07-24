@@ -25,7 +25,7 @@ const UserPosts = ({ userId }) => {
     fetchPosts();
   }, [userId]);
 
-  return posts ? (
+  return posts.length ? (
     posts.map((post) => (
       <Grid
         component={Link}

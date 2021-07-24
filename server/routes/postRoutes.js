@@ -8,6 +8,8 @@ const {
   postsBySpecificUser,
   likePost,
   unlikePost,
+  commentOnPost,
+  deleteComment,
 } = require('../controllers/postController');
 const { isAuthorized } = require('../middlewares/private');
 const upload = require('../middlewares/uploadPhoto');
@@ -21,8 +23,12 @@ router.route('/').get(postsByUser).post(upload.single('photo'), createPost);
 router.route('/:id').get(getPost).delete(deletePost);
 router.route('/user/:id').get(postsBySpecificUser);
 
-//Like or Unlike
+// Like or Unlike
 router.route('/like').patch(likePost);
 router.route('/unlike').patch(unlikePost);
+
+// Comments
+router.route('/comment').patch(commentOnPost);
+router.route('/deleteComment').patch(deleteComment);
 
 module.exports = router;

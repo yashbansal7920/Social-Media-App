@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Container,
   Card,
@@ -24,57 +24,22 @@ import avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';
 import Comments from './Comments';
 
-const Post = () => {
-  const { postId } = useParams();
+const Post = ({
+  userData,
+  isLiked,
+  postData,
+  postId,
+  setIsLiked,
+  setPostData,
+}) => {
   const history = useHistory();
-  const [postData, setPostData] = useState({});
-  const [userData, setUserData] = useState({});
-  const [isLiked, setIsLiked] = useState(false);
+
   const [expand, setExpand] = useState(false);
   const [comment, setComment] = useState('');
 
   const handleExpandClick = () => {
     setExpand((prev) => !prev);
   };
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/post/${postId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
-        setPostData(data);
-        setIsLiked(data.likes.includes(userData._id));
-      } catch (error) {
-        console.log(error.response);
-      }
-    };
-    fetchPost();
-  }, [postId, userData]);
-
-  useEffect(() => {
-    const fetchMe = async () => {
-      try {
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/user/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
-        setUserData(data);
-      } catch (error) {
-        console.log(error.response);
-      }
-    };
-    fetchMe();
-  }, []);
 
   const handleDeletePost = async () => {
     try {

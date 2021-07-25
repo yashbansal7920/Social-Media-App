@@ -10,6 +10,7 @@ const {
   unlikePost,
   commentOnPost,
   deleteComment,
+  followedUsersPosts,
 } = require('../controllers/postController');
 const { isAuthorized } = require('../middlewares/private');
 const upload = require('../middlewares/uploadPhoto');
@@ -18,6 +19,9 @@ const router = express.Router();
 
 // To check user is authorized or not
 router.use(isAuthorized);
+
+// Followed Users Posts
+router.route('/followedPosts').get(followedUsersPosts);
 
 router.route('/').get(postsByUser).post(upload.single('photo'), createPost);
 router.route('/:id').get(getPost).delete(deletePost);

@@ -1,36 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { Container, Typography } from '@material-ui/core';
+import { Container, Typography, CircularProgress } from '@material-ui/core';
 import Post from '../../components/posts/Post';
 
-const SinglePost = () => {
-  const { postId } = useParams();
-  const [postData, setPostData] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+const Home = () => {
+  const [posts, setPosts] = useState([]);
   const [userData, setUserData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchPosts = async () => {
       setIsLoading(true);
       try {
         const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/post/${postId}`,
+          `${process.env.REACT_APP_API_URL}/post/followedPosts`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           }
         );
-        setPostData(data);
+        setPosts(data);
       } catch (error) {
-        console.log(error.response);
+        console.log(error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchPost();
-  }, [postId]);
+    fetchPosts();
+  }, []);
 
   useEffect(() => {
     const fetchMe = async () => {
@@ -51,15 +49,27 @@ const SinglePost = () => {
     fetchMe();
   }, []);
 
-  return (
+  return !isLoading ? (
     <Container maxWidth="sm">
-      {!isLoading ? (
-        <Post userData={userData} postData={postData} />
+      {posts.length ? (
+        posts.map((post) => {
+          return (
+            <Post
+              key={post._id}
+              userData={userData}
+              postData={post}
+              setPostData={setPosts}
+              postId={post._id}
+            />
+          );
+        })
       ) : (
-        <Typography>Loading..</Typography>
+        <Typography variant="h3">You all Caught up</Typography>
       )}
     </Container>
+  ) : (
+    <CircularProgress />
   );
 };
 
-export default SinglePost;
+export default Home;

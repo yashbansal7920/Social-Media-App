@@ -140,3 +140,33 @@ exports.deleteComment = async (req, res) => {
     res.status(400).json(error);
   }
 };
+
+exports.followedUsersPosts = async (req, res) => {
+  try {
+    const { user: currentUser } = req;
+
+    const page = req.query.page * 1 || 1;
+    const skip = (page - 1) * 1;
+
+    const followersPosts = await Promise.all(
+      currentUser.following.map(
+        async (followId) =>
+          await Post.find({ postedBy: followId }).skip(skip).limit(1).populate({
+            path: 'postedBy comments.postedBy',
+            select: '_id name username profilePhoto',
+          })
+      )
+    );
+
+    const newPosts = followersPosts.flat(1).sort((p1, p2) => {
+      const p1CreatedAt = new Date(p1.createdAt).getTime();
+      const p2CreatedAt = new Date(p2.createdAt).getTime();
+
+      return p2CreatedAt - p1CreatedAt;
+    });
+
+    res.status(200).json(newPosts);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};

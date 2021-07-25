@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import {
-  Container,
   Card,
   CardMedia,
   CardContent,
@@ -24,26 +23,25 @@ import avatar from '../../assets/avatar.png';
 import { Link } from 'react-router-dom';
 import Comments from './Comments';
 
-const Post = ({
-  userData,
-  isLiked,
-  postData,
-  postId,
-  setIsLiked,
-  setPostData,
-}) => {
+const Post = ({ userData, postData }) => {
   const history = useHistory();
 
   const [expand, setExpand] = useState(false);
   const [comment, setComment] = useState('');
+  const [isLiked, setIsLiked] = useState(false);
+  const [post, setPost] = useState(postData);
 
   const handleExpandClick = () => {
     setExpand((prev) => !prev);
   };
 
+  useEffect(() => {
+    setIsLiked(post.likes?.includes(userData?._id));
+  }, [post, userData]);
+
   const handleDeletePost = async () => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/post/${postId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/post/${post._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -58,15 +56,14 @@ const Post = ({
     try {
       const { data } = await axios.patch(
         `${process.env.REACT_APP_API_URL}/post/like`,
-        { postId: postData._id },
+        { postId: post._id },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
-      // console.log(data);
-      setPostData(data);
+      setPost(data);
       setIsLiked(true);
     } catch (error) {
       console.log(error.response);
@@ -77,15 +74,14 @@ const Post = ({
     try {
       const { data } = await axios.patch(
         `${process.env.REACT_APP_API_URL}/post/unlike`,
-        { postId: postData._id },
+        { postId: post._id },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
-      // console.log(data);
-      setPostData(data);
+      setPost(data);
       setIsLiked(false);
     } catch (error) {
       console.log(error.response);
@@ -98,14 +94,14 @@ const Post = ({
     try {
       const { data } = await axios.patch(
         `${process.env.REACT_APP_API_URL}/post/comment`,
-        { postId: postData._id, comment: { text: comment } },
+        { postId: post._id, comment: { text: comment } },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
-      setPostData(data);
+      setPost(data);
       setComment('');
     } catch (error) {
       console.log(error.response);
@@ -113,38 +109,38 @@ const Post = ({
   };
 
   return (
-    postData && (
-      <Container maxWidth="sm">
+    post && (
+      <>
         <div style={{ marginTop: '32px' }} />
 
         <Card>
           <CardHeader
             component={Link}
             to={
-              userData._id === postData.postedBy?._id
+              userData._id === post.postedBy?._id
                 ? '/me'
-                : `/user/${postData.postedBy?._id}`
+                : `/user/${post.postedBy?._id}`
             }
             style={{ textDecoration: 'none', color: 'black' }}
-            title={postData?.postedBy?.username}
-            subheader={<Moment fromNow>{postData.createdAt}</Moment>}
+            title={post?.postedBy?.username}
+            subheader={<Moment fromNow>{post.createdAt}</Moment>}
             avatar={
               <Avatar
                 src={
-                  postData.postedBy?.profilePhoto
-                    ? `/${postData.postedBy?.profilePhoto}`
+                  post.postedBy?.profilePhoto
+                    ? `/${post.postedBy?.profilePhoto}`
                     : avatar
                 }
-                alt={postData.postedBy?.name}
+                alt={post.postedBy?.name}
               />
             }
           />
 
-          <CardMedia component="img" image={`/${postData.image}`} />
+          <CardMedia component="img" image={`/${post.image}`} />
 
           <CardContent>
             <Typography display="inline" variant="body2" component="p">
-              {postData.body}
+              {post.body}
             </Typography>
           </CardContent>
 
@@ -168,17 +164,17 @@ const Post = ({
             )}
 
             <Typography style={{ flexGrow: 1 }} variant="subtitle2">
-              Likes {postData.likes?.length}
+              Likes {post.likes?.length}
             </Typography>
             <Button onClick={handleExpandClick}>View Comments</Button>
           </CardActions>
 
           <Collapse in={expand} timeout="auto" unmountOnExit>
             <Comments
-              comments={postData.comments}
+              comments={post.comments}
               currentUserId={userData._id}
-              setPostData={setPostData}
-              postData={postData}
+              setPostData={setPost}
+              postData={post}
             />
           </Collapse>
 
@@ -203,7 +199,7 @@ const Post = ({
           </form>
 
           <CardActions>
-            {userData._id === postData.postedBy?._id && (
+            {userData._id === post.postedBy?._id && (
               <Button
                 onClick={handleDeletePost}
                 variant="outlined"
@@ -214,7 +210,7 @@ const Post = ({
             )}
           </CardActions>
         </Card>
-      </Container>
+      </>
     )
   );
 };

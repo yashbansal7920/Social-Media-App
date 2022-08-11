@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const connectDB = () => {
   const DB = process.env.DATABASE.replace(
-    "<password>",
+    '<password>',
     process.env.DATABASE_PASSWORD
   );
 
@@ -13,7 +13,7 @@ const connectDB = () => {
       useCreateIndex: true,
       useFindAndModify: false,
     })
-    .then(() => console.log("DB connection successful!"));
+    .then(() => console.log('DB connection successful!'));
 };
 
 module.exports = connectDB;

@@ -25,9 +25,8 @@ exports.isAuthorized = async (req, res, next) => {
     }
 
     req.user = currentUser;
+    next();
   } catch (error) {
     res.status(401).json(error);
   }
-
-  next();
 };

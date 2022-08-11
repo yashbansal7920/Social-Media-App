@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -59,18 +62,37 @@ exports.login = async (req, res, next) => {
 };
 
 exports.socialLogin = async (req, res) => {
-  const { email, name } = req.body;
+  const { idToken } = req.body;
+
   try {
+    const {
+      payload: { email_verified: emailVerified, name, email },
+    } = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    if (!emailVerified)
+      res.status(400).json({
+        error: 'Google login failed. Try again',
+      });
+
     const user = await User.findOne({ email });
 
     if (!user) {
-      const newUser = await User.create({ email, username: name });
+      const password = email + process.env.JWT_SECRET;
+      const newUser = await User.create({
+        email,
+        name,
+        username: name,
+        password,
+      });
       createSendToken(newUser, 201, res);
     } else {
       createSendToken(user, 200, res);
     }
   } catch (error) {
-    res.status(400).json(error);
+    res.status(401).json(error.message);
   }
 };
 

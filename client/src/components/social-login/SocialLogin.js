@@ -7,11 +7,11 @@ const SocialLogin = () => {
   const history = useHistory();
 
   const responseGoogle = async (response) => {
-    console.log(response);
     const { data } = await axios.post(
       'http://127.0.0.1:8000/api/social-login',
-      response.profileObj
+      { idToken: response.tokenId }
     );
+    console.log(data);
     localStorage.setItem('token', data.token);
     history.push('/');
   };

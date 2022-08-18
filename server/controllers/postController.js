@@ -145,13 +145,14 @@ exports.followedUsersPosts = async (req, res) => {
   try {
     const { user: currentUser } = req;
 
-    const page = req.query.page * 1 || 1;
-    const skip = (page - 1) * 1;
+    // const page = req.query.page * 1 || 1;
+    // const skip = (page - 1) * 1;
+    // .skip(skip).limit(1).
 
     const followersPosts = await Promise.all(
       currentUser.following.map(
         async (followId) =>
-          await Post.find({ postedBy: followId }).skip(skip).limit(1).populate({
+          await Post.find({ postedBy: followId }).populate({
             path: 'postedBy comments.postedBy',
             select: '_id name username profilePhoto',
           })

@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router';
 import GoogleLogin from 'react-google-login';
 
+import { AuthContext } from '../../Context/AuthContext';
+
 const SocialLogin = () => {
   const history = useHistory();
+
+  const { setCurrentUser } = useContext(AuthContext);
 
   const responseGoogle = async (response) => {
     const { data } = await axios.post(
       'http://127.0.0.1:8000/api/social-login',
       { idToken: response.tokenId }
     );
-    console.log(data);
+    setCurrentUser(data);
     localStorage.setItem('token', data.token);
     history.push('/');
   };

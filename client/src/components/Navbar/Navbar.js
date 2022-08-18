@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -14,33 +13,20 @@ import useStyles from './styles';
 import avatar from '../../assets/avatar.png';
 import SearchModal from '../SearchModal/SearchModal';
 
+import { AuthContext } from '../../Context/AuthContext';
+
 const Navbar = () => {
   const classes = useStyles();
-  const [isLogout, setIsLogout] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const { currentUser } = useContext(AuthContext);
+  const [user, setUser] = useState(currentUser);
+
+  useEffect(() => {
+    setUser(currentUser);
+  }, [currentUser]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setIsLogout(true);
   };
-
-  useEffect(() => {
-    if (!localStorage.getItem('token')) return;
-
-    const fetchUser = async () => {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      setCurrentUser(data);
-    };
-    fetchUser();
-  }, []);
 
   return (
     <AppBar className={classes.root} color="inherit" position="sticky">
@@ -57,13 +43,13 @@ const Navbar = () => {
         {localStorage.getItem('token') ? (
           <>
             {' '}
-            <SearchModal userId={currentUser?._id}>
+            <SearchModal userId={user?._id}>
               <IconButton className={classes.icon} size="medium">
                 <SearchIcon fontSize="large" />
               </IconButton>
             </SearchModal>
             <Avatar
-              src={`/${currentUser?.profilePhoto}` || avatar}
+              src={`/${user?.profilePhoto}` || avatar}
               component={Link}
               to="/me"
               className={classes.avatar}

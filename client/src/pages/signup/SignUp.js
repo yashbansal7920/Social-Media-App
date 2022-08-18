@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
 import signup from '../../assets/signup.jpg';
 import useStyles from './styles';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import SocialLogin from '../../components/social-login/SocialLogin';
+import { AuthContext } from '../../Context/AuthContext';
 
 const initialState = {
   username: '',
@@ -21,6 +22,8 @@ const SignUp = () => {
   const [formData, setFormData] = useState(initialState);
   const [error, setError] = useState('');
 
+  const { setCurrentUser } = useContext(AuthContext);
+
   const handleSignup = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -34,7 +37,7 @@ const SignUp = () => {
         `${process.env.REACT_APP_API_URL}/signUp`,
         formData
       );
-
+      setCurrentUser(data);
       localStorage.setItem('token', data.token);
 
       history.push('/');

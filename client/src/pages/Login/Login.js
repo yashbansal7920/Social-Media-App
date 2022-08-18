@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
 import login from '../../assets/login.jpg';
 import useStyles from './styles';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import SocialLogin from '../../components/social-login/SocialLogin';
+
+import { AuthContext } from '../../Context/AuthContext';
 
 const initialState = {
   email: '',
@@ -17,6 +19,8 @@ const Login = () => {
   const [error, setError] = useState('');
   const history = useHistory();
 
+  const { setCurrentUser } = useContext(AuthContext);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -25,6 +29,8 @@ const Login = () => {
         `${process.env.REACT_APP_API_URL}/login`,
         formData
       );
+
+      setCurrentUser(data);
 
       setFormData(initialState);
       localStorage.setItem('token', data.token);

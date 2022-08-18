@@ -55,6 +55,7 @@ const CreatePost = ({ children, setCreatePost }) => {
       console.log(data);
       setOpen(false);
       setCreatePost(true);
+      setImgPreview(null);
     } catch (error) {
       console.log(error.response);
     }

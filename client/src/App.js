@@ -4,6 +4,8 @@ import createTheme from '@material-ui/core/styles/createTheme';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
+import PrivateRoute from './PrivateRoute';
+
 import SignUp from './pages/signup/SignUp';
 import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
@@ -25,7 +27,7 @@ const App = () => {
           <Route exact component={Login} path="/login" />
           <>
             <Navbar />
-            <Route component={Home} exact path="/" />
+            <PrivateRoute component={Home} exact path="/" />
             <Route exact path="/me" component={UserProfile} />
             <Route exact component={UpdateUser} path="/updateMe" />
             <Route component={User} exact path="/user/:userId" />
